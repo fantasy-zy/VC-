@@ -23,6 +23,8 @@
 IMPLEMENT_DYNCREATE(CDrawView, CView)
 
 BEGIN_MESSAGE_MAP(CDrawView, CView)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 // CDrawView 构造/析构
@@ -80,3 +82,59 @@ CDrawDoc* CDrawView::GetDocument() const // 非调试版本是内联的
 
 
 // CDrawView 消息处理程序
+
+
+void CDrawView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	this->m_ptOrigin = point;
+
+	CView::OnLButtonDown(nFlags, point);
+}
+
+
+void CDrawView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+
+	////1.SDK
+	//{
+	//	HDC hdc;
+	//	hdc = ::GetDC(m_hWnd);
+	//	::MoveToEx(hdc, m_ptOrigin.x, m_ptOrigin.y, NULL);
+	//	::LineTo(hdc, point.x, point.y);
+	//	::ReleaseDC(m_hWnd, hdc);
+	//}
+
+	////2.CDC类
+	//{
+	//	CDC* pDC = GetDC();
+	//	pDC->MoveTo(m_ptOrigin);
+	//	pDC->LineTo(point);
+	//	ReleaseDC(pDC);
+	//}
+
+	////3.CClientDC
+	//{
+	//	//CClientDC dc(this);
+	//	CClientDC dc(GetParent());
+
+	//	dc.MoveTo(m_ptOrigin);
+	//	dc.LineTo(point);
+	//}
+
+	//4.CWindowDC
+	{
+		//CWindowDC dc(this);
+		//CWindowDC dc(GetParent());
+		CWindowDC dc(GetDesktopWindow());
+
+
+		dc.MoveTo(m_ptOrigin);
+		dc.LineTo(point);
+	}
+
+	CView::OnLButtonUp(nFlags, point);
+}
